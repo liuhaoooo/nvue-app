@@ -1,0 +1,76 @@
+<template>
+  <view class="home">
+    <u-navbar title="我的路由器" :safeAreaInsetTop="true" bgColor="#1a1c29">
+      <view slot="left" class="navbar-content" @click="logout">
+        <u-icon name="setting" size="16" color="#f4f4f5"></u-icon>
+        <text class="nav-text" style="margin-left: 10rpx">退出</text>
+      </view>
+      <view slot="right" class="navbar-content">
+        <text class="nav-text" style="margin-right: 10rpx">更多</text>
+        <u-icon name="arrow-down" size="16" color="#f4f4f5"></u-icon>
+      </view>
+    </u-navbar>
+    <view class="home-content" :render-whole="true">
+      <view></view>
+      <view>
+        <view class="out">
+          <view class="in">
+            <text class="in-text">网络正常</text>
+          </view>
+        </view>
+        <u-gap height="60"></u-gap>
+        <u-line></u-line>
+      </view>
+      <view class="home-footer">
+        <view class="home-footer-item">
+          <u-icon @click="to('NETWORK')" name="setting" color="#12a086" size="30" label="上网设置" labelPos="bottom"
+            labelColor="#f4f4f5" space="10px"></u-icon>
+        </view>
+        <view class="home-footer-item">
+          <u-icon @click="to('WIFI_INDEX')" name="wifi" color="#12a086" size="30" label="Wi-Fi设置" labelPos="bottom"
+            labelColor="#f4f4f5" space="10px"></u-icon>
+        </view>
+        <view class="home-footer-item">
+          <u-icon @click="to('TOOLS')" name="grid" color="#12a086" size="30" label="工具箱" labelPos="bottom"
+            labelColor="#f4f4f5" space="10px"></u-icon>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { computedCache, clearCache } from "@/common/tools.js"
+  export default {
+    data() {
+      return {
+        data: ""
+      };
+    },
+    methods: {
+      to(url) {
+        uni.navigateTo({ url: getApp().$router[url] })
+      },
+      logout() {
+        uni.showModal({
+          title: '提示',
+          content: '确定要退出登陆吗？',
+          success: function (res) {
+            if (res.confirm) {
+              uni.reLaunch({
+                url: getApp().$router.LOGIN,
+              });
+            }
+          }
+        });
+      },
+    },
+  };
+</script>
+
+<style scoped>
+  .nav-text {
+    color: #f4f4f5;
+    font-size: 30upx;
+  }
+</style>

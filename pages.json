@@ -1,0 +1,91 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue",
+		"autoscan": true,
+		"custom": {
+			"^i-(.*)": "@/components/$1.nvue"
+		}
+	},
+	"pages": [ 
+		{
+			"path": "pages/login/index",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationStyle":"custom",
+				"disableScroll":true
+			}
+		},
+		{
+			"path": "components/scan",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationStyle":"custom",
+				"disableScroll":true
+			}
+		},
+		{
+			"path": "pages/home/index",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationStyle":"custom",
+				"disableScroll":true
+			}
+		},
+		{
+			"path": "pages/device/index",
+			"style": {
+				"navigationBarTitleText": "设备"
+			}
+		},
+		{
+			"path": "pages/tools/index",
+			"style": {
+				"navigationBarTitleText": "工具箱"
+			}
+		},
+		{
+			"path": "pages/wifiSettings/index",
+			"style": {
+				"navigationBarTitleText": "Wi-Fi设置"
+			}
+		},
+		{
+			"path": "pages/network/index",
+			"style": {
+				"navigationBarTitleText": "上网设置"
+			}
+		},
+		{
+			"path": "pages/wifiSettings/wifiSet_24",
+			"style": {
+				"navigationBarTitleText": "2.4G Wi-Fi设置"
+			}
+		},
+		{
+			"path": "pages/wifiSettings/wifiSet_5",
+			"style": {
+				"navigationBarTitleText": "5G Wi-Fi设置"
+			}
+		},
+		{
+			"path": "pages/wifiSettings/wifiSetAdv_24",
+			"style": {
+				"navigationBarTitleText": "2.4G Wi-Fi高级设置"
+			}
+		},
+		{
+			"path": "pages/wifiSettings/wifiSetAdv_5",
+			"style": {
+				"navigationBarTitleText": "5G Wi-Fi高级设置"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarBackgroundColor": "#1a1c29",
+		"backgroundColor": "#1a1c29",
+		"app-plus": {
+			"scrollIndicator": "none"
+		}
+	}
+}

@@ -1,0 +1,85 @@
+<template>
+    <view class="settings-main">
+        <u--form :model="form" ref="uForm" labelPosition="top" :rules="rules" labelWidth="300" errorType="toast">
+            <u-form-item label="5G 优选">
+                <u-switch v-model="form.wifiSames" activeColor="#12a086"></u-switch>
+            </u-form-item>
+            <u-form-item label="Wi-Fi名称" prop="ssid_24">
+                <u--input v-model="form.ssid_24" />
+            </u-form-item>
+            <u-form-item label="Wi-Fi密码" prop="key_24">
+                <u--input v-model="form.key_24" />
+            </u-form-item>
+            <u-form-item label="Wi-Fi名称" prop="ssid_5">
+                <u--input v-model="form.ssid_5" />
+            </u-form-item>
+            <u-form-item label="Wi-Fi密码" prop="key_5">
+                <u--input v-model="form.key_5" />
+            </u-form-item>
+        </u--form>
+        <u-button @click="submit" type="primary" text="确定"></u-button>
+        <u-button type="primary" :plain="true" text="取消" style="margin-top: 30rpx;"></u-button>
+    </view>
+    <u-loading-page :loading="loading" bg-color="#1a1c29" color="#16cdab"></u-loading-page>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                loading: false,
+                form: {
+                    wifiSames: false,
+                    ssid_24: "",
+                    key_24: "",
+                    ssid_5: "",
+                    key_5: "",
+                },
+                wifi5SW: false,
+                wlan2gSSID: "CMCC-3346_WiFi5",
+                wifi5gSSID: "CMCC-3346_WiFi5-5G",
+                rules: {
+                    ssid_24: [
+                        {
+                            required: true,
+                            message: '请输入姓名',
+                            trigger: ['blur', 'change']
+                        }
+                    ],
+                    ssid_5: [
+                        {
+                            required: true,
+                            message: '请输入姓名',
+                            trigger: ['blur', 'change']
+                        }
+                    ]
+                }
+            };
+        },
+        onLoad() {
+            setTimeout(() => {
+                this.loading = false;
+            }, 1000)
+        },
+        methods: {
+            submit() {
+                this.$refs.uForm.validate().then(res => {
+                    uni.$u.toast('校验通过')
+                }).catch(errors => {
+                    
+                })
+            }
+        },
+    };
+</script>
+<style lang="scss" scoped>
+    .settings-main {
+      padding: 20rpx;
+      padding-bottom: 40rpx;
+    }
+  
+    .text {
+      font-size: 30rpx;
+      color: #ccc;
+    }
+</style>

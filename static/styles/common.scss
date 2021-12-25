@@ -1,0 +1,52 @@
+// home.nvue
+.home {
+    .home-content {
+        flex: 1;
+        justify-content: space-between;
+        padding: 45upx;
+
+        .navbar-content {
+            flex-direction: row;
+            align-items: center;
+
+            .nav-text {
+                color: #f4f4f5;
+                font-size: 30upx;
+            }
+        }
+
+        .out {
+            width: 660upx;
+            height: 660upx;
+            padding: 45upx;
+            background-image: linear-gradient(to bottom right, #00ffdd, #e100ff);
+            border-radius: 690upx;
+
+            .in {
+                justify-content: center;
+                align-items: center;
+                width: 570upx;
+                height: 570upx;
+                border-radius: 600upx;
+                background: #1a1c29;
+
+                .in-text {
+                    color: #f4f4f5;
+                    font-size: 42upx;
+                }
+            }
+
+        }
+
+        .home-footer {
+            margin-bottom: 20px;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .home-footer-item {
+                margin-left: 10rpx;
+                margin-right: 10rpx;
+            }
+        }
+    }
+}

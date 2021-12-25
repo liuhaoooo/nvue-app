@@ -1,0 +1,65 @@
+<template>
+    <view class="content">
+        <barcode id='1' class="barcode" autostart="true" ref="barcode" background="#000000" frameColor="#12a086"
+            scanbarColor="#12a086" :filters="fil" @marked="success1" @error="fail1"></barcode>
+        <u-button class="margin-20" type="primary" text="开启闪光灯" @click="toFlash"></u-button>
+        <u-button class="margin-20" type="primary" text="取消扫码识别" @click="tocancel"></u-button>
+    </view>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                fil: [0, 2, 1],
+            };
+        },
+        methods: {
+            // 扫码
+            success1(e) {
+                console.log("success1:" + JSON.stringify(e));
+            },
+            fail1(e) {
+                console.log("fail1:" + JSON.stringify(e));
+            },
+            toStart: function () {
+                this.$refs.barcode.start({
+                    conserve: true,
+                    filename: '_doc/barcode/'
+                });
+            },
+            tocancel: function () {
+                this.$refs.barcode.cancel();
+                uni.navigateBack()
+            },
+            toFlash: function () {
+                this.$refs.barcode.setFlash(true);
+            },
+
+            toscan: function () {
+                const barcodeModule = uni.requireNativePlugin('barcodeScan');
+                barcodeModule.scan("/static/barcode1.png"
+                    , (e) => {
+                        console.log("scan_error:" + JSON.stringify(e));
+                    });
+            }
+        },
+    };
+</script>
+
+<style scoped>
+    .content {
+        flex: 1;
+        justify-content: center;
+        padding: 50upx;
+    }
+
+    .margin-20 {
+        margin-top: 40upx;
+    }
+
+    .barcode {
+        margin-top: 40upx;
+        height: 500upx;
+    }
+</style>

@@ -1,0 +1,45 @@
+<template>
+    <view>
+        <u-form-item :label="label" @click="open">
+            <u--input color="#f4f4f5" disabledColor="transparent" :value="authenticationType_show" suffixIcon="arrow-down" disabled />
+        </u-form-item>
+        <u-picker confirmColor="#12a086" :show="selectShow" :columns="[columns]" keyName="name" @confirm="confirm" @cancel="selectShow=false"></u-picker>
+    </view>
+</template>
+
+<script>
+    export default {
+        props: {
+            columns: {
+                type: Array,
+                default: []
+            },
+            label: {
+                type: String
+            },
+            vModel:{
+                type: String
+            }
+        },
+        data() {
+            return {
+                selectShow: false
+            }
+        },
+        computed: {
+            authenticationType_show() {
+                const res = this.columns.filter(item => item.value == this.vModel)[0]
+                return res ? res.name : this.columns[0].name
+            },
+        },
+        methods: {
+            open() {
+                this.selectShow = true
+            },
+            confirm(e) {
+                this.$emit("confirm", e.value[0])
+                this.selectShow = false
+            }
+        }
+    }
+</script>

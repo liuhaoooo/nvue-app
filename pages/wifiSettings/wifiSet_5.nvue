@@ -1,0 +1,88 @@
+<template>
+    <view class="settings-main" :render-whole="true">
+        <u--form :model="form" ref="uForm" labelPosition="top" :rules="rules" labelWidth="300" errorType="toast">
+            <u-form-item label="Wi-Fi 开关">
+                <u-switch v-model="form.wifiOpen" activeColor="#12a086"></u-switch>
+                <template slot="right">
+                    <u-checkbox-group>
+                        <u-checkbox activeColor="#12a086" shape="circle" :checked="form.broadcast"></u-checkbox>
+                        <text class="text">Wi-Fi广播</text>
+                    </u-checkbox-group>
+                </template>
+            </u-form-item>
+            <u-form-item label="Wi-Fi 名称" prop="ssid">
+                <u--input color="#f4f4f5" v-model="form.ssid"/>
+            </u-form-item>
+            <i-select :vModel="form.authenticationType" :columns="authenticationOption" label="认证方式" @confirm="selectConfirm($event,'authenticationType')"/>
+            <template v-if="form.authenticationType!='0'">
+                <i-select :vModel="form.encryption" :columns="encryptionOption" label="加密算法" @confirm="selectConfirm($event,'encryption')"/>
+                <u-form-item label="Wi-Fi 密码" prop="key">
+                    <u--input color="#f4f4f5" v-model="form.key" :password="true" />
+                </u-form-item>
+            </template>
+            <u-form-item>
+                <template slot="right">
+                    <u--text @click="to('WIFI_SET_ADV_5')" suffixIcon="arrow-right" iconStyle="color: #12a086" text="高级设置"
+                    color="#12a086"></u--text>
+                </template>
+            </u-form-item>
+        </u--form>
+        <u-button @click="submit" type="primary" text="确定"></u-button>
+        <u-button type="primary" :plain="true" text="取消" style="margin-top: 30upx;"></u-button>
+    </view>
+    <u-loading-page :loading="loading" bg-color="#1a1c29" color="#16cdab"></u-loading-page>
+</template>
+
+<script>
+    import { rules_wifi_index, authenticationOption, encryptionOption } from "./config.js"
+    export default {
+        data() {
+            return {
+                loading: false,
+                selectShow: null,
+                form: {
+                    wifiOpen: true,
+                    broadcast: true,
+                    ssid: "CMCC-3346",
+                    key: "12345678",
+                    authenticationType: "2",
+                    encryption: "2"
+                },
+                rules: rules_wifi_index,
+                authenticationOption,
+                encryptionOption
+            };
+        },
+        onLoad() {
+            setTimeout(() => {
+                this.loading = false;
+            }, 500)
+        },
+        methods: {
+            to(url) {
+                uni.navigateTo({ url: getApp().$router[url] })
+            },
+            submit() {
+                this.$refs.uForm.validate().then(res => {
+                    uni.$u.toast('校验通过')
+                }).catch(errors => {
+
+                })
+            },
+            selectConfirm(e,name){
+                this.form[name] = e.value
+            },
+        },
+    };
+</script>
+<style lang="scss" scoped>
+    .settings-main {
+      padding: 20upx;
+      padding-bottom: 40upx;
+    }
+  
+    .text {
+      font-size: 30upx;
+      color: #ccc;
+    }
+</style>

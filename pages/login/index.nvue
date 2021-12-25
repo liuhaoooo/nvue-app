@@ -1,0 +1,40 @@
+<template>
+  <view class="login-content" :render-whole="true">
+    <u-button type="primary" text="登录" @click="login"></u-button>
+    <u-button type="primary" text="扫码" @click="to('SCAN')"></u-button>
+    <!-- <no-data class="no-data"></no-data> -->
+  </view>
+</template>
+
+<script>
+  import noData from "@/components/nodata.nvue";
+  export default {
+    components: {
+      noData,
+    },
+    data() {
+      return {
+        fil: [0, 2, 1],
+      };
+    },
+    onLoad() { },
+    methods: {
+      to(url) {
+        uni.navigateTo({ url: getApp().$router[url] })
+      },
+      login() {
+        uni.redirectTo({
+          url: getApp().$router.HOME,
+        });
+      },
+    },
+  };
+</script>
+
+<style scoped>
+  .login-content {
+    flex: 1;
+    justify-content: space-around;
+    padding: 60upx;
+  }
+</style>

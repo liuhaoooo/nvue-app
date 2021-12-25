@@ -1,0 +1,139 @@
+<template>
+    <view class="container">
+        <view class="container-item" ref="orderFlush">
+            <text>哈哈哈哈</text>
+        </view>
+    </view>
+</template>
+<script>
+    const Binding = uni.requireNativePlugin('bindingx');
+    const domModule = weex.requireModule('dom');
+    export default {
+        data() {
+            return {
+
+            };
+        },
+        onLoad: function () {
+            this.init();
+            // this.bindTiming()
+        },
+
+        methods: {
+            getEl: function (el) {
+                if (typeof el === 'string' || typeof el === 'number') return el;
+                if (WXEnvironment) {
+                    return el.ref;
+                } else {
+                    return el instanceof HTMLElement ? el : el.$el;
+                }
+            },
+            // 渐变
+            init() {
+                this.$nextTick(() => {
+                    domModule.getComponentRect(this.$refs.orderFlush, option => {
+                        this.orderBinding = Binding.bind({
+                            eventType: 'timing',
+                            exitExpression: 't>3000',
+                            props: [{
+                                element: this.getEl(this.$refs.orderFlush),
+                                property: 'background-color',
+                                expression: {
+                                    origin: 'evaluateColor("#00ffdd", "#e100ff", min(t, 3000)/3000)'
+                                }
+                            }],
+                        }, (res) => {
+                            if (res.state === 'exit') {
+                                Binding.unbind({
+                                    token: this.orderBinding,
+                                    eventType: 'timing',
+                                });
+                                this.orderBinding = '';
+                                this.init2()
+                            }
+                        });
+                    });
+                })
+            },
+            init2() {
+                this.$nextTick(() => {
+                    domModule.getComponentRect(this.$refs.orderFlush, option => {
+                        this.orderBinding = Binding.bind({
+                            eventType: 'timing',
+                            exitExpression: 't>3000',
+                            props: [{
+                                element: this.getEl(this.$refs.orderFlush),
+                                property: 'background-color',
+                                expression: {
+                                    origin: 'evaluateColor("#e100ff", "#00ffdd", min(t, 3000)/3000)'
+                                }
+                            }],
+                        }, (res) => {
+                            if (res.state === 'exit') {
+                                Binding.unbind({
+                                    token: this.orderBinding,
+                                    eventType: 'timing',
+                                });
+                                this.orderBinding = '';
+                                this.init()
+                            }
+                        });
+                    });
+                })
+            },
+            // 移动
+            init1() {
+                this.$nextTick(() => {
+                    let result = domModule.getComponentRect(this.$refs.orderFlush, option => {
+                        let order = this.getEl(this.$refs.orderFlush);
+                        let page_width = uni.upx2px(750);
+                        setTimeout(() => {
+                            domModule.getComponentRect(this.$refs.orderFlush, option => {
+                                const width = option.size.width;
+                                const time = Number(width) * 1000 / 40;
+                                this.orderBinding = Binding.bind({
+                                    eventType: 'timing',
+                                    exitExpression: 't>' + time,
+                                    props: [{
+                                        element: order,
+                                        property: 'transform.translateX',
+                                        expression: `linear(t, 0, -${page_width + width}, ${time})`
+                                    }],
+                                }, (res) => {
+                                    if (res.state === 'exit') {
+                                        Binding.unbind({
+                                            token: this.orderBinding,
+                                            eventType: 'timing',
+                                        });
+                                        /* ---运动结束后重置状态--- */
+                                        this.orderBinding = '';
+                                        this.left = 750;
+                                        /* ---运动结束后轮询--- */
+                                        this.init5();
+                                    }
+                                });
+                            });
+                        }, 100)
+                    });
+                });
+            },
+        }
+    }  
+</script>
+<style>
+    .container {
+        width: 750rpx;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container-item {
+        width: 300rpx;
+        height: 300rpx;
+        border-radius: 300rpx;
+        align-items: center;
+        justify-content: center;
+        background-image: linear-gradient(to bottom right, #00ffdd, #e100ff);
+    }
+</style>

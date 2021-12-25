@@ -1,0 +1,107 @@
+<template>
+  <view class="settings-main" :render-whole="true">
+    <u--form :model="form" ref="uForm" labelPosition="top" :rules="rules" labelWidth="300" errorType="toast">
+      <u-form-item label="5G 优选">
+        <u-switch v-model="form.wifiSames" activeColor="#12a086"></u-switch>
+      </u-form-item>
+      <text class="text">2.4G和5G网络合并显示，同等信号强度下，优选速度更快的5G网络。</text>
+      <!-- 2.4 -->
+      <template v-if="!form.wifiSames">
+        <u-divider text="2.4G Wi-Fi"></u-divider>
+        <u-form-item label="Wi-Fi名称" prop="ssid">
+          <u--input color="#f4f4f5" v-model="form.ssid_24"/>
+        </u-form-item>
+        <u-form-item label="Wi-Fi密码" prop="key">
+          <u--input color="#f4f4f5" v-model="form.key_24" :password="true"/>
+        </u-form-item>
+        <u-form-item>
+          <template slot="right">
+              <u--text @click="to('WIFI_SET_24')" suffixIcon="arrow-right" iconStyle="color: #12a086" text="更多设置"
+              color="#12a086"></u--text>
+          </template>
+        </u-form-item>
+      </template>
+      <!-- 5 -->
+      <u-divider text="5G Wi-Fi"></u-divider>
+      <u-form-item label="Wi-Fi名称" prop="ssid">
+        <u--input color="#f4f4f5" v-model="form.ssid_5" />
+      </u-form-item>
+      <u-form-item label="Wi-Fi密码" prop="key">
+        <u--input color="#f4f4f5" v-model="form.key_5" :password="true"/>
+      </u-form-item>
+      <u-form-item>
+        <template slot="right">
+            <u--text @click="to('WIFI_SET_5')" suffixIcon="arrow-right" iconStyle="color: #12a086" text="更多设置"
+            color="#12a086"></u--text>
+        </template>
+      </u-form-item>
+      <!-- wifi5 -->
+      <u-divider text="Wi-Fi5"></u-divider>
+      <u-form-item label="Wi-Fi5 备用网络">
+        <u-switch v-model="wifi5SW" activeColor="#12a086"></u-switch>
+      </u-form-item>
+      <text class="text">一些旧设备支持WiFi6效果不好，可能出现扫描不到WiFi信号，连接不上WiFi等情况。开启此开关就能兼容这一类旧设备。密码保持与对应频段Wi-Fi密码一致。</text>
+      <template v-if="wifi5SW">
+        <u-form-item label="2.4G 名称" v-if="!form.wifiSames">
+          <text class="text">{{wlan2gSSID}}</text>
+        </u-form-item>
+        <u-form-item label="5G 名称">
+          <text class="text">{{wifi5gSSID}}</text>
+        </u-form-item>
+      </template>
+    </u--form>
+    <u-button @click="submit" type="primary" text="确定"></u-button>
+    <u-button type="primary" :plain="true" text="取消" style="margin-top: 30upx;"></u-button>
+  </view>
+  <u-loading-page :loading="loading" bg-color="#1a1c29" color="#16cdab"></u-loading-page>
+</template>
+
+<script>
+  import { rules_wifi_index } from "./config.js"
+  export default {
+    data() {
+      return {
+        loading: false,
+        form: {
+          wifiSames: false,
+          ssid_24: "",
+          key_24: "",
+          ssid_5: "",
+          key_5: "",
+        },
+        wifi5SW: true,
+        wlan2gSSID: "CMCC-3346_WiFi5",
+        wifi5gSSID: "CMCC-3346_WiFi5-5G",
+        rules: rules_wifi_index,
+      };
+    },
+    onLoad() {
+      setTimeout(() => {
+        this.loading = false;
+      }, 500)
+    },
+    methods: {
+      to(url) {
+        uni.navigateTo({ url: getApp().$router[url] })
+      },
+      submit() {
+        this.$refs.uForm.validate().then(res => {
+          uni.$u.toast('校验通过')
+        }).catch(errors => {
+          
+        })
+      }
+    },
+  };
+</script>
+<style lang="scss" scoped>
+  .settings-main {
+    padding: 20upx;
+    padding-bottom: 40upx;
+  }
+
+  .text {
+    font-size: 30upx;
+    color: #ccc;
+  }
+</style>

@@ -1,0 +1,43 @@
+<template>
+    <u-cell @click="click" size="large" :border="false" :title="title" :isLink="true" arrow-direction="right">
+        <u-icon slot="icon" size="32" :name="require('../static/cell_icon/'+icon+'.png')"></u-icon>
+        <text slot="value" style="color:#a0a0a0;font-size:26rpx">{{details}}</text>
+    </u-cell>
+</template>
+<script>
+    export default {
+        props: {
+            toUrl: {
+                type: String,
+                default: ""
+            },
+            title: {
+                type: String,
+                default: ""
+            },
+            icon: {
+                type: String,
+                default: ""
+            },
+            link: {
+                type: Boolean,
+                default: true
+            },
+            details: {
+                type: String,
+                default: ""
+            }
+        },
+        methods: {
+            click() {
+                if (this.link) {
+                    if (this.toUrl) {
+                        uni.navigateTo({ url: getApp().$router[this.toUrl] })
+                    }
+                } else {
+                    this.$emit("cellClick")
+                }
+            },
+        },
+    };
+</script>
