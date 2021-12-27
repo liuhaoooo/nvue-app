@@ -17,7 +17,10 @@
         fil: [0, 2, 1],
       };
     },
-    onLoad() { },
+    onLoad() {
+      // 预加载home页面
+      uni.preloadPage({ url: getApp().$router.HOME });
+    },
     methods: {
       to(url) {
         uni.navigateTo({ url: getApp().$router[url] })

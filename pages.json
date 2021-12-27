@@ -52,7 +52,7 @@
 		{
 			"path": "pages/network/index",
 			"style": {
-				"navigationBarTitleText": "上网设置"
+				"navigationStyle":"custom"
 			}
 		},
 		{

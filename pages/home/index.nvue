@@ -39,7 +39,7 @@
         </view>
       </view>
       <view>
-        <view class="out">
+        <view class="out" ref="out">
           <view class="in" @click="to('INFO')">
             <text class="in-text">网络正常</text>
           </view>
@@ -73,6 +73,12 @@
       return {
         _menuOpen: false,
       }
+    },
+    onShow() {
+      this.color()
+    },
+    onHide() {
+      Binding.unbindAll()
     },
     methods: {
       to(url) {
@@ -109,7 +115,7 @@
             element: page,
             property: 'transform.translateX',
             expression: 'linear(t, 0, 260, 200)'
-          },{
+          }, {
             element: page,
             property: 'transform.scale',
             expression: 'linear(t, 1, -0.2, 200)'
@@ -137,7 +143,7 @@
             element: page,
             property: 'transform.translateX',
             expression: 'linear(t, 260, -260, 200)'
-          },{
+          }, {
             element: page,
             property: 'transform.scale',
             expression: 'linear(t, 0.8, 0.2, 200)'
@@ -154,7 +160,7 @@
           }
         });
       },
-      showMenu: function () {
+      showMenu() {
         let menu1 = this.getEl(this.$refs.menu1);
         let menu2 = this.getEl(this.$refs.menu2);
         let menu3 = this.getEl(this.$refs.menu3);
@@ -240,24 +246,58 @@
           }
           ]
         });
-      }
+      },
+      // 渐变
+      color() {
+        this.$nextTick(() => {
+          domModule.getComponentRect(this.$refs.out, option => {
+            this.orderBinding = Binding.bind({
+              eventType: 'timing',
+              exitExpression: 't>3000',
+              props: [{
+                element: this.getEl(this.$refs.out),
+                property: 'background-color',
+                expression: {
+                  origin: 'evaluateColor("#00ffdd", "#e100ff", min(t, 3000)/3000)'
+                }
+              }],
+            }, (res) => {
+              if (res.state === 'exit') {
+                Binding.unbind({
+                  token: this.orderBinding,
+                  eventType: 'timing',
+                });
+                this.color_back()
+              }
+            });
+          });
+        })
+      },
+      color_back() {
+        this.orderBinding = Binding.bind({
+          eventType: 'timing',
+          exitExpression: 't>3000',
+          props: [{
+            element: this.getEl(this.$refs.out),
+            property: 'background-color',
+            expression: {
+              origin: 'evaluateColor("#e100ff", "#00ffdd", min(t, 3000)/3000)'
+            }
+          }],
+        }, (res) => {
+          if (res.state === 'exit') {
+            Binding.unbind({
+              token: this.orderBinding,
+              eventType: 'timing',
+            });
+            this.color()
+          }
+        });
+      },
     }
   }
 </script>
 
 <style scoped>
-  .menu {
-    width: 250;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    justify-content: center;
-    align-items: center;
-    padding-top: 120upx;
-    padding-bottom: 100upx;
-  }
 
-  .item_container {
-    width: 250;
-  }
 </style>

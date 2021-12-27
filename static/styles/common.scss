@@ -2,12 +2,14 @@
 .home-container {
     flex: 1;
     background: #000000;
+
     .home-content {
         background: #1a1c29;
         box-shadow: -5px -5px 20px 20px rgb(238, 238, 238);
         flex: 1;
         justify-content: space-between;
         padding: 45upx;
+        border-radius: 20;
 
         .home-header {
             height: 100upx;
@@ -64,6 +66,21 @@
                 margin-left: 10rpx;
                 margin-right: 10rpx;
             }
+        }
+    }
+
+    .menu {
+        width: 250;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        justify-content: center;
+        align-items: center;
+        padding-top: 250upx;
+        padding-bottom: 100upx;
+
+        .item_container {
+            width: 250;
         }
     }
 }
