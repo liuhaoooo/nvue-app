@@ -3,30 +3,37 @@
     <!-- menu -->
     <view class="menu">
       <view class="item_container" style="opacity:0" ref="menu1">
-        <text class="item">Menu1</text>
+        <u-cell-group :border="false">
+          <i-cell title="DHCP" icon="2" />
+          <i-cell title="DHCP" icon="2" />
+        </u-cell-group>
       </view>
       <view class="item_container" style="opacity:0" ref="menu2">
-        <text class="item">Menu2</text>
+        <i-cell title="DHCP" icon="2" />
+        <i-cell title="DHCP" icon="2" />
       </view>
       <view class="item_container" style="opacity:0" ref="menu3">
-        <text class="item">Menu3</text>
+        <i-cell title="DHCP" icon="2" />
+        <i-cell title="DHCP" icon="2" />
       </view>
       <view class="item_container" style="opacity:0" ref="menu4">
-        <text class="item">Menu4</text>
+        <i-cell title="DHCP" icon="2" />
+        <i-cell title="DHCP" icon="2" />
       </view>
       <view class="item_container" style="opacity:0" ref="menu5">
-        <text class="item">Menu5</text>
+        <i-cell title="DHCP" icon="2" />
+        <i-cell title="DHCP" icon="2" />
       </view>
     </view>
     <!-- main -->
-    <view class="home-content" ref="main" @touchstart="onTouchStart">
+    <view class="home-content" ref="main" @click="closeMenu">
       <view class="home-header">
         <view class="navbar-content" @click="logout">
           <u-icon name="setting" size="16" color="#f4f4f5"></u-icon>
           <text class="nav-text" style="margin-left: 10rpx">退出</text>
         </view>
         <text class="nav-text-mid">我的路由器</text>
-        <view class="navbar-content" @click="expandWithDrag">
+        <view class="navbar-content" @click="openMenu">
           <text class="nav-text" style="margin-right: 10rpx">更多</text>
           <u-icon name="arrow-down" size="16" color="#f4f4f5"></u-icon>
         </view>
@@ -64,9 +71,7 @@
   export default {
     data() {
       return {
-        _is_expanded: false,
-        _menu_animation_flag: false,
-        _opacity: 0
+        _menuOpen: false,
       }
     },
     methods: {
@@ -77,7 +82,7 @@
         uni.showModal({
           title: '提示',
           content: '确定要退出登陆吗？',
-          success: function (res) {
+          success: (res) => {
             if (res.confirm) {
               uni.reLaunch({
                 url: getApp().$router.LOGIN,
@@ -86,7 +91,7 @@
           }
         });
       },
-      getEl: function (el) {
+      getEl(el) {
         if (typeof el === 'string' || typeof el === 'number') return el;
         if (WXEnvironment) {
           return el.ref;
@@ -94,198 +99,60 @@
           return el instanceof HTMLElement ? el : el.$el;
         }
       },
-      onTouchStart: function () {
-        if (!this._is_expanded) {
-          this.expandWithDrag();
-        } else {
-          this.collapseWithDrag();
-        }
-      },
-      expandWithDrag: function () {
-        var self = this;
+      openMenu() {
         let page = this.getEl(this.$refs.main);
         let width = uni.upx2px(750);
         let result = Binding.bind({
-          // eventType: 'timing',
-          // exitExpression: 't>3000',
-          // props: [{
-          //   element: page,
-          //   property: 'transform.translateX',
-          //   expression: 'linear(t, 0,' + (width - 100) + ',3000)'
-          // },
-          // {
-          //   element: page,
-          //   property: 'transform.scaleX',
-          //   expression: '1-min(260,max(0,x))/260*0.2'
-          // },
-          // {
-          //   element: page,
-          //   property: 'transform.scaleY',
-          //   expression: '1-min(260,max(0,x))/260*0.2'
-          // }]
-          eventType: 'pan',
-          anchor: page,
+          eventType: 'timing',
+          exitExpression: 't>200',
           props: [{
             element: page,
             property: 'transform.translateX',
-            expression: {
-              origin: 'min(260,max(0,x))'
-            }
-          },
-          {
+            expression: 'linear(t, 0, 260, 200)'
+          },{
             element: page,
-            property: 'transform.scaleX',
-            expression: {
-              origin: '1-min(260,max(0,x))/260*0.2' //1-->0.8
-            }
-          },
-          {
-            element: page,
-            property: 'transform.scaleY',
-            expression: {
-              origin: '1-min(260,max(0,x))/260*0.2'
-            }
-          }
-          ]
-        }, function (e) {
-          if (e.state === 'end' && !self._is_expanded) {
-            let offset = e.deltaX;
-            if (offset < 260 / 2 && offset > 0) {
-              self.collapseWithAnimation();
-            } else if (offset >= 260 / 2) {
-              self.expandWithAnimation();
-            }
+            property: 'transform.scale',
+            expression: 'linear(t, 1, -0.2, 200)'
+          }]
+        }, (e) => {
+          if (e.state === 'exit') {
             if (result) {
               Binding.unbind({
                 token: result.token,
-                eventType: 'pan'
+                eventType: 'timing'
               });
             }
+            this._menuOpen = true
+            this.showMenu();
           }
         });
       },
-      collapseWithDrag: function () {
-        var self = this;
+      closeMenu() {
+        if (!this._menuOpen) return
         let page = this.getEl(this.$refs.main);
         let result = Binding.bind({
-          eventType: 'pan',
-          anchor: page,
+          eventType: 'timing',
+          exitExpression: 't>200',
           props: [{
             element: page,
             property: 'transform.translateX',
-            expression: {
-              origin: '260+min(0,max(0-260,x))'
-            }
-          },
-          {
+            expression: 'linear(t, 260, -260, 200)'
+          },{
             element: page,
-            property: 'transform.scaleX',
-            expression: {
-              origin: '0.8-min(0,max(0-260,x))/260*0.2'
-            }
-          },
-          {
-            element: page,
-            property: 'transform.scaleY',
-            expression: {
-              origin: '0.8-min(0,max(0-260,x))/260*0.2'
-            }
-          }
-          ]
-        }, function (e) {
-          if (e.state === 'end' && self._is_expanded) {
-            let offset = Math.abs(e.deltaX);
-            if (offset < 260 / 2 && offset > 0) {
-              self.expandWithAnimation();
-            } else if (offset >= 260 / 2 && offset <= 260) {
-              self.collapseWithAnimation();
-            }
+            property: 'transform.scale',
+            expression: 'linear(t, 0.8, 0.2, 200)'
+          }]
+        }, (e) => {
+          if (e.state === 'exit' && this._menuOpen) {
             if (result) {
               Binding.unbind({
                 token: result.token,
-                eventType: 'pan'
+                eventType: 'timing'
               });
             }
+            this._menuOpen = false
           }
         });
-      },
-      collapseWithAnimation: function () {
-        this._is_expanded = false;
-        this._menu_animation_flag = false;
-        let page = this.getEl(this.$refs.main);;
-        let offset = Binding.getComputedStyle(page).translateX;
-        let duration = 200; //ms
-        let scale = Binding.getComputedStyle(page).scaleX;
-        let self = this;
-        Binding.bind({
-          eventType: 'timing',
-          exitExpression: {
-            origin: `t>${duration}`
-          },
-          props: [{
-            element: page,
-            property: 'transform.translateX',
-            expression: {
-              origin: `easeOutCubic(t,${offset},${0 - offset},${duration})`
-            }
-          },
-          {
-            element: page,
-            property: 'transform.scaleX',
-            expression: {
-              origin: `easeOutCubic(t,${scale},${1 - scale},${duration})`
-            }
-          },
-          {
-            element: page,
-            property: 'transform.scaleY',
-            expression: {
-              origin: `easeOutCubic(t,${scale},${1 - scale},${duration})`
-            }
-          }
-          ]
-        }, function (e) { })
-      },
-      expandWithAnimation: function () {
-        let self = this;
-        this._is_expanded = true;
-        let page = this.getEl(this.$refs.main);
-        let offset = Binding.getComputedStyle(page).translateX;
-        let duration = 200; //ms
-        let scale = Binding.getComputedStyle(page).scaleX;
-        Binding.bind({
-          eventType: 'timing',
-          exitExpression: {
-            origin: `t>${duration}`
-          },
-          props: [{
-            element: page,
-            property: 'transform.translateX',
-            expression: {
-              origin: `easeOutCubic(t,${offset},${260 - offset},${duration})`
-            }
-          },
-          {
-            element: page,
-            property: 'transform.scaleX',
-            expression: {
-              origin: `easeOutCubic(t,${scale},${0.8 - scale},${duration})` //scale-->1
-            }
-          },
-          {
-            element: page,
-            property: 'transform.scaleY',
-            expression: {
-              origin: `easeOutCubic(t,${scale},${0.8 - scale},${duration})` //scale-->1
-            }
-          }
-          ]
-        }, function (e) {
-          if (e.state === 'exit' && !self._menu_animation_flag) {
-            self.showMenu();
-            self._menu_animation_flag = true;
-          }
-        })
       },
       showMenu: function () {
         let menu1 = this.getEl(this.$refs.menu1);
@@ -386,20 +253,11 @@
     bottom: 0;
     justify-content: center;
     align-items: center;
-    margin-top: 10;
-    margin-bottom: 10;
-  }
-
-  .item {
-    color: #ffffff;
-    font-size: 30;
+    padding-top: 120upx;
+    padding-bottom: 100upx;
   }
 
   .item_container {
-    height: 60;
     width: 250;
-    justify-content: center;
-    align-items: center;
-    margin-top: 35;
   }
 </style>
