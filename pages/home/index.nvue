@@ -33,7 +33,7 @@
       </view>
       <view>
         <view class="out">
-          <view class="in">
+          <view class="in" @click="to('INFO')">
             <text class="in-text">网络正常</text>
           </view>
         </view>

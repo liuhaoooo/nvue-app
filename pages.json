@@ -56,6 +56,12 @@
 			}
 		},
 		{
+			"path": "pages/info/index",
+			"style": {
+				"navigationBarTitleText": "信息"
+			}
+		},
+		{
 			"path": "pages/wifiSettings/wifiSet_24",
 			"style": {
 				"navigationBarTitleText": "2.4G Wi-Fi设置"

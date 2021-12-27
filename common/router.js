@@ -9,4 +9,5 @@ export const router = {
     WIFI_SET_ADV_24: "/pages/wifiSettings/wifiSetAdv_24",
     WIFI_SET_ADV_5: "/pages/wifiSettings/wifiSetAdv_5",
     NETWORK: "/pages/network/index",
+    INFO: "/pages/info/index",
 }

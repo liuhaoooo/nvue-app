@@ -10,7 +10,7 @@
             <i-cell title="家长控制" icon="6" />
             <i-cell title="语言" icon="16" />
             <i-cell title="修改登录密码" icon="14" />
-            <i-cell title="清理缓存" icon="1" @cellClick="clearCache" :link="false" :details="cache"/>
+            <i-cell title="清理缓存" icon="1" @cellClick="clearCache" :link="false" :details="cache" />
         </u-cell-group>
         <u-gap height="20" bgColor="#000000"></u-gap>
         <u-cell-group :border="false">
@@ -46,9 +46,18 @@
                 });
             },
             clearCache() {
-                clearCache(this.computedCache)
+                uni.showModal({
+                    title: '提示',
+                    content: '确定要清除缓存吗？',
+                    success: (res) => {
+                        if (res.confirm) {
+                            clearCache(this.computedCache)
+                        }
+                    }
+                });
+
             },
-            async computedCache(){
+            async computedCache() {
                 this.cache = await computedCache()
             }
         },
