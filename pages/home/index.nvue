@@ -74,11 +74,13 @@
         _menuOpen: false,
       }
     },
-    onShow() {
+    onReady() {
       this.color()
     },
-    onHide() {
-      Binding.unbindAll()
+    onUnload() {
+      try {
+        Binding.unbindAll()
+      } catch (error) { }
     },
     methods: {
       to(url) {

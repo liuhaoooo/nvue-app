@@ -1,27 +1,23 @@
 <template>
-  <view class="menu">
-    <view class="item_container" style="opacity:0" ref="menu1">
-      <i-cell title="DHCP" icon="2" />
-      <i-cell title="DHCP" icon="2" />
-    </view>
-    <view class="item_container" style="opacity:0" ref="menu2">
-      <i-cell title="DHCP" icon="2" />
-      <i-cell title="DHCP" icon="2" />
-    </view>
-    <view class="item_container" style="opacity:0" ref="menu3">
-      <i-cell title="DHCP" icon="2" />
-      <i-cell title="DHCP" icon="2" />
-    </view>
-    <view class="item_container" style="opacity:0" ref="menu4">
-      <i-cell title="DHCP" icon="2" />
-      <i-cell title="DHCP" icon="2" />
-    </view>
-    <view class="item_container" style="opacity:0" ref="menu5">
-      <i-cell title="DHCP" icon="2" />
-      <i-cell title="DHCP" icon="2" />
-    </view>
+  <view class="container">
+    <view ref="box" class="box" @touchstart="ontouchstart" @appear="onappear"></view>
   </view>
 </template>
+
+<style scoped>
+  .container {
+    flex: 1;
+  }
+
+  .box {
+    width: 250rpx;
+    height: 250rpx;
+    margin-top: 250rpx;
+    margin-left: 250rpx;
+    background: #fb7d7d;
+    margin-bottom: 500rpx;
+  }
+</style>
 
 <script>
   const Binding = uni.requireNativePlugin('bindingx');
@@ -29,124 +25,50 @@
   export default {
     data() {
       return {
-
+        x: 0,
+        y: 0,
+        flag: 0
       }
     },
+    mounted() {
+      this.bind();
+    },
     methods: {
-      getEl: function (e) {
-        return e.ref;
+      bind() {
+        this.$nextTick(() => {
+          let box = this.getEl(this.$refs.box);
+          Binding.bind({
+            eventType: 'orientation',
+            props: [
+              {
+                element: box,
+                property: 'transform.translateX',
+                expression: 'x+0'
+              },
+              {
+                element: box,
+                property: 'transform.translateY',
+                expression: {
+                  origin: 'y+0'
+                }
+              }
+            ]
+          }, (e) => {
+            console.log(e);
+          });
+        })
       },
-      showMenu: function () {
-        let menu1 = this.getEl(this.$refs.menu1);
-        let menu2 = this.getEl(this.$refs.menu2);
-        let menu3 = this.getEl(this.$refs.menu3);
-        let menu4 = this.getEl(this.$refs.menu4);
-        let menu5 = this.getEl(this.$refs.menu5);
-        let duration = 1000; //ms
-        let parallax = 50;
-        Binding.bind({
-          eventType: 'timing',
-          exitExpression: {
-            origin: `t>${duration * 5}`
-          },
-          props: [{
-            element: menu1,
-            property: 'transform.translateY',
-            expression: {
-              origin: `easeOutElastic(t,0,0-100,${duration})`
-            }
-          },
-          {
-            element: menu2,
-            property: 'transform.translateY',
-            expression: {
-              origin: `t<${parallax}?0:easeOutElastic(t,0,0-100,${duration - parallax})`
-            }
-          },
-          {
-            element: menu3,
-            property: 'transform.translateY',
-            expression: {
-              origin: `t<${parallax * 2}?0:easeOutElastic(t,0,0-100,${duration - parallax * 2})`
-            }
-          },
-          {
-            element: menu4,
-            property: 'transform.translateY',
-            expression: {
-              origin: `t<${parallax * 3}?0:easeOutElastic(t,0,0-100,${duration - parallax * 3})`
-            }
-          },
-          {
-            element: menu5,
-            property: 'transform.translateY',
-            expression: {
-              origin: `t<${parallax * 4}?0:easeOutElastic(t,0,0-100,${duration - parallax * 4})`
-            }
-          },
-          // opacity
-          {
-            element: menu1,
-            property: 'opacity',
-            expression: {
-              origin: `easeOutElastic(t,0,1,${duration})`
-            }
-          },
-          {
-            element: menu2,
-            property: 'opacity',
-            expression: {
-              origin: `t<${parallax}?0:easeOutElastic(t,0,1,${duration - parallax})`
-            }
-          },
-          {
-            element: menu3,
-            property: 'opacity',
-            expression: {
-              origin: `t<${parallax * 2}?0:easeOutElastic(t,0,1,${duration - parallax * 2})`
-            }
-          },
-          {
-            element: menu4,
-            property: 'opacity',
-            expression: {
-              origin: `t<${parallax * 3}?0:easeOutElastic(t,0,1,${duration - parallax * 3})`
-            }
-          },
-          {
-            element: menu5,
-            property: 'opacity',
-            expression: {
-              origin: `t<${parallax * 4}?0:easeOutElastic(t,0,1,${duration - parallax * 4})`
-            }
-          }
-          ]
-        });
+      getEl(el) {
+        if (typeof el === 'string' || typeof el === 'number') return el;
+        if (WXEnvironment) {
+          return el.ref;
+        } else {
+          return el instanceof HTMLElement ? el : el.$el;
+        }
+      },
+      ontouchstart(event) {
+        this.bind();
       }
     }
   }
 </script>
-
-<style>
-  .menu {
-    width: 250;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10;
-    margin-bottom: 10;
-  }
-
-  .item {
-    color: #ffffff;
-    font-size: 30;
-  }
-
-  .item_container {
-    width: 250;
-    justify-content: center;
-    align-items: center;
-  }
-</style>
